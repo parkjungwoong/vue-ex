@@ -14,8 +14,8 @@
 1. View(화면단 개발)에 최적화
 2. MVVM 패턴을 기반
 3. Life Cycle
-4. 템플릿
-5. 단방향 데이터 바인딩
+4. 템플릿 사용
+5. 단방향 이벤트 플로우(One-Way Data Flow)
 6. Virtual DOM(Document Object Model) 이용
 7. 컴포넌트 기반으로 재사용성 높음
 8. 브라우저 지원(익스9이상 지원)
@@ -33,11 +33,11 @@ _Command패턴과 Data Binding 두가지 패턴을 이용함으로써 의존성�
 _Command패턴: 호출자와 수신자간의 의존성을 제거_
 
 > MVVC패턴에 의한 전체적인 로직 흐름\
-  View : 데이터 입력 & ViewModel에 값 전달\
-  ViewModel : Model에 필요한 데이터 요청\
-  Model : ViewModel에 필요한 데이터 전달\
-  ViewModel : Model에서 받은 데이터 가공 & 변수에 저장\
-  View : 데이터 바인딩으로 자동으로 값 갱신
+  1.View : 데이터 입력 & ViewModel에 값 전달\
+  2.ViewModel : Model에 필요한 데이터 요청\
+  3.Model : ViewModel에 필요한 데이터 전달\
+  4.ViewModel : Model에서 받은 데이터 가공 & 변수에 저장\
+  5.View : 데이터 바인딩으로 자동으로 값 갱신
 
 View : html\
 ViewModel : Vue 생성자 함수로 인스턴스 생성한 곳 (new Vue(...))\
@@ -47,10 +47,10 @@ Model : ????
 
 라이프사이클 훅 : Life Cycle 중 호출되는 함수이다.(다이어그램에서 빨간색으로 표기된 부분)
 
-beforeCreate ~ created : 데이터 및 이벤트 초기화\
-created ~ beforeMount : 뷰 생성\
-mounted ~ updated : 데이터 바인딩, 데이터 변경 주시 및 뷰 업데이트\
-destroyed : 자식 컴포넌트, 이벤트 리스너 해제
+`beforeCreate ~ created` : 데이터 및 이벤트 초기화\
+`created ~ beforeMount` : 뷰 생성\
+`mounted ~ updated` : 데이터 바인딩, 데이터 변경 주시 및 뷰 업데이트\
+`destroyed` : 자식 컴포넌트, 이벤트 리스너 해제
 
 ![Life Cycle](https://kr.vuejs.org/images/lifecycle.png)
 
@@ -59,11 +59,15 @@ destroyed : 자식 컴포넌트, 이벤트 리스너 해제
 
 데이터 값을 html 템플릿에 맞춰 치환하는 작업\
 Vue인스턴스 생성자에서 인자값으로 `el`, `template`으로 넘기는 값으로, Vue 생성시 데이터와 뷰 바인딩 처리를 위해 템블릿이 사용된다.\
-Directives(지시자, v-로 시작하는)를 사용하여 좀 더 동적 처리가 가능하다 (v-if, v-bind 등등)
+`Directives`(지시자, v-로 시작하는)를 사용하여 좀 더 동적 처리가 가능하다 (v-if, v-bind 등등)
+`computed` 속성을 통해 템플릿 내에 함수를 사용할 수 있다. (간단한 작업에만 사용하는게 좋음)
+`watch` 속성을 통해 데이터 변경에 대한 작업을 수행할 수 있다. (주로 입력에 대한 응답으로 비동기식으로 처리할 경우, 입력값에 따라 API요청 결과를 받아서 처리하는 것 같은거)
 
-**5.단방향 데이터 바인딩**
+`computed` vs `watch` : `computed`는 계산되어 나와야될 값(사칙연산이나 문자열 파싱과 같은 작업), `watch`는 데이터의 변경, 추가 (API요청을 통해 데이터를 받아서 처리하는 작업)
 
+**5.단방향 이벤트 플로우(One-Way Data Flow)**
 
+todo: 꼭 작성하기!!!!! 중요한 부분인거 같음
 
 **Virtual DOM(Document Object Model) 이용**\
 DOM : 브라우저에서 HTML을 읽어들여서 구조화(node, property..) 후 메모리에 갖고 있는 데이터, 데이터가 구조화 되어 있기 때문에 html문서에 접근 할 수 있는 interface이기도 하다.\
@@ -76,9 +80,10 @@ DOM의 트리 구조는 사용하기 쉽지만 HTML 구조가 복잡하거나 �
 
 **컴포넌트 기반으로 재사용성 높음**\
 컴포넌트 : 독립적으로 동작하는 하나의 Vue인스턴스\
-컴포넌트를 잘 활용하면 코드의 재사용성을 높일 수 있다.\
+컴포넌트의 목적은 공통의 템플릿을 사용하여 여러 데이터를 표현하는 것이기 때문에 글로벌 영역에 컴포넌트를 등록해야 한다(특정 영역에서만 사용하는것도 가능)\
 좀 더 자세히 보면 미리 정의된 옵션을 갖고 있는 Vue인스턴스로 예를 들면 List를 보여주는 List컴포넌트가 있다고 가정하면\
 List컴포넌트에 보여줄 배열만 넘기면 해당 컴포넌트를 호출하는 뷰에서는 항ㅇ상 같은 기능과 디자인으로 List를 보여줄 수 있다.
+
 
 **7. 브라우저 지원(익스9이상 지원)**\
 Badel, Badel-polyfill, 등의 자바스크립트 컴파일 도구를 이용해서 호환성을 맞출 수 있다.(해당 설정을 해줘야한다.) 하지만 만능은 아니다\
